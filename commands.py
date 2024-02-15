@@ -1,7 +1,7 @@
 import os
 import sys
 
-from base import GIT_DIR, add_object, commit
+from base import GIT_DIR, add_object, commit, get_ignore_list, compare_ignore
 
 
 def _init_object_store():
@@ -28,9 +28,24 @@ def main():
     if command == 'init':
         init_git_repo()
     elif command == 'add':
-        for file_path in sys.argv[2:]:
-            sha1 = add_object(file_path)
-            print(f'Added {file_path} to Min-Git object store as {sha1}')
+        if sys.argv[2] == '.':
+            ignore_list = get_ignore_list() + [GIT_DIR]
+            # print(ignore_list)
+            for root, dirs, files in os.walk('.'):
+                # print(root, dirs, files)
+                for d in dirs:
+                    if compare_ignore(d, ignore_list):
+                        dirs.remove(d)
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    if not compare_ignore(file_path, ignore_list):
+                        print(f'Added {file_path} to Min-Git object store')
+                    #     sha1 = add_object(file_path)
+                        # print(f'Added {file_path} to Min-Git object store as {sha1}')
+        else:
+            for file_path in sys.argv[2:]:
+                sha1 = add_object(file_path)
+                print(f'Added {file_path} to Min-Git object store as {sha1}')
     elif command == 'commit':
         message = sys.argv[2]
         sha1 = commit(message)

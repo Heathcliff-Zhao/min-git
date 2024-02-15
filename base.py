@@ -1,6 +1,7 @@
 import os
 import hashlib
 import json
+import re
 
 GIT_DIR = '.min-git'
 
@@ -14,6 +15,23 @@ def add_object(file_path):
     with open(object_path, 'wb') as f:
         f.write(data)
     return sha1
+
+def get_ignore_list():
+    ignore_file = '.min-gitignore'
+    if not os.path.exists(ignore_file):
+        return []
+    with open(ignore_file) as f:
+        return [l.strip() for l in f.read().splitlines()]
+    
+def compare_ignore(file, ignore):
+    for ig in ignore:
+        # if file.endswith(ig) or file.startswith(ig):
+        #     return True
+        # if re.match(ig, file):
+        #     return True
+        if ig in file:
+            return True
+    return False
 
 def commit(message):
     index = {}
