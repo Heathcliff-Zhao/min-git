@@ -1,0 +1,22 @@
+[
+    {
+        "path": ".gitignore",
+        "mode": "100644",
+        "sha": "ed8ebf583f771da9150c35db3955987b7d757904"
+    },
+    {
+        "path": ".min-gitignore",
+        "mode": "100644",
+        "sha": "b87f497c640757aa443054fd1fd38e07f6cf0eab"
+    },
+    {
+        "path": "main.py",
+        "mode": "100644",
+        "sha": "d95889f7eeb2ddf304ee68f93a4d1616de378c91"
+    },
+    {
+        "path": "mingit.py",
+        "mode": "100644",
+        "sha": "a6379d8c27137a3b62acaed1e6a376147996d3d2"
+    }
+]

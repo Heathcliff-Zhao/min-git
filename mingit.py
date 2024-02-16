@@ -3,6 +3,7 @@ import hashlib
 import json
 import time
 import fnmatch
+import difflib
 
 
 class MinGit:
@@ -221,11 +222,32 @@ class MinGit:
         obj_type = data[:end_of_type].decode().split(' ')[0]
         return obj_type
     
+    def get_object_data(self, sha):
+        obj_path = os.path.join(self.objects_dir, sha[:2], sha[2:])
+        with open(obj_path, 'rb') as f:
+            data = f.read()
+        end_of_type = data.find(b'\0')
+        return data[end_of_type + 1:]
+    
     def checkout(self, *args):
         raise NotImplementedError
     
-    def diff(self, *args):
-        raise NotImplementedError
+    def diff(self):
+        with open(self.index_path, 'r') as f:
+            index = json.load(f)
+        for path, sha in index.items():
+            file_path = os.path.join(self.repo_path, path)
+            if os.path.exists(file_path):
+                with open(file_path, 'rb') as f:
+                    data = f.read()
+                file_sha = self.hash_object(data, store=False)
+                if file_sha != sha:
+                    print(f"diff --git a/{path} b/{path}")
+                    print(f"index {sha[:7]}..{file_sha[:7]} 100644")
+                    print(f"--- a/{path}")
+                    print(f"+++ b/{path}")
+                    for diff_ in difflib.unified_diff(self.get_object_data(sha).decode().splitlines(), data.decode().splitlines(), lineterm=''):
+                        print(diff_)
     
     def merge(self, *args):
         raise NotImplementedError

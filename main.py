@@ -15,6 +15,8 @@ def main():
             min_git.add(command.split()[1])
         elif command.startswith('commit '):
             min_git.commit(command.split()[1])
+        elif command == 'diff':
+            min_git.diff()
         else:
             print('Invalid command')
             exit(0)
